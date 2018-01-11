@@ -18,20 +18,38 @@ import UIKit
 
 class ViewController: UIViewController {
     
+    @IBOutlet weak var numberOfBallsLabel: UILabel!
+    @IBOutlet weak var numberOfBallsSlider: UISlider!
+    
+    var displayView:SpinnerFibonacci?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let displayView = SpinnerFibonacci(frame: CGRect(x: (self.view.frame.size.width * 0.5) - 50, y: (self.view.frame.size.height * 0.5) - 50, width: 100, height: 100))
+        // Setup spinner
+        displayView = SpinnerFibonacci(frame: CGRect(x: (self.view.frame.size.width * 0.5) - 125, y: (self.view.frame.size.height * 0.5) - 125, width: 250, height: 250))
         
-        displayView.startAnimating()
+        displayView?.numberOfBalls = Int(numberOfBallsSlider.value)
+
+        displayView?.startAnimating()
         
-        self.view.addSubview(displayView)
+        self.view.addSubview(displayView!)
+    }
+    
+    @IBAction func sliderAction(_ sender: Any) {
+        
+        displayView?.numberOfBalls = Int(numberOfBallsSlider.value)
+        numberOfBallsLabel.text = "\(round(numberOfBallsSlider.value))"
     }
 }
 
 class SpinnerFibonacci: UIView {
     
     var colors = [
+        UIColor(0xee1c27),UIColor(0xbc0271),UIColor(0x612d92),
+        UIColor(0x283897),UIColor(0x016db8),UIColor(0x02a2b8),
+        UIColor(0x00a666),UIColor(0xa7d04e),UIColor(0xfef200),
+        UIColor(0xfeaf16),UIColor(0xf58020),UIColor(0xf35724),
         UIColor(0xee1c27),UIColor(0xbc0271),UIColor(0x612d92),
         UIColor(0x283897),UIColor(0x016db8),UIColor(0x02a2b8),
         UIColor(0x00a666),UIColor(0xa7d04e),UIColor(0xfef200),
@@ -92,7 +110,7 @@ class SpinnerFibonacci: UIView {
         
         for i in startIndex..<numberOfBalls + startIndex {
             
-            drawBall(getX(i:i, timeStamp:timeStep), getY(i:i, timeStep:timeStep), colors[i-startIndex])
+            drawBall(getX(i:i, timeStep:timeStep), getY(i:i, timeStep:timeStep), colors[i-startIndex])
         }
         
         timeStep += 1
@@ -108,7 +126,7 @@ class SpinnerFibonacci: UIView {
         return Double(timeStep) * (Double(i) / 100 * speed + 0.005)
     }
     
-    func getX(i: Int, timeStamp: Int) -> CGFloat {
+    func getX(i: Int, timeStep: Int) -> CGFloat {
     
         return (frame.width / 2) + CGFloat(getR(i: i)) * cos(CGFloat(getT(i: i, timeStep: timeStep)))
     }
